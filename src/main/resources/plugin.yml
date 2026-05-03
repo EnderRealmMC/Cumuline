@@ -1,0 +1,5 @@
+name: Cumuline
+version: '1.0-SNAPSHOT'
+main: cn.enderrealm.cumuline.Cumuline
+api-version: '1.18'
+authors: [ EnderRealm ]
