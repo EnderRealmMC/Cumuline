@@ -1,0 +1,15 @@
+name: CumulineTestPlugin
+version: '${version}'
+main: cn.enderrealm.cumuline.test.CumulineTestPlugin
+api-version: '1.21'
+authors: [ EnderRealm ]
+depend: [ Cumuline, floodgate ]
+commands:
+  cumulinetest:
+    description: Sends Cumuline packets to the command executor for manual client testing.
+    usage: /cumulinetest <popup|jukebox-raw|jukebox> ...
+    permission: cumuline.test
+permissions:
+  cumuline.test:
+    description: Allows use of the Cumuline manual packet test command.
+    default: op

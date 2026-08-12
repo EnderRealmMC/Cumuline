@@ -1,9 +1,14 @@
 plugins {
     id 'java'
+    id 'com.gradleup.shadow' version '9.3.0'
 }
 
 group = 'cn.enderrealm'
 version = '1.0-SNAPSHOT'
+
+def paperVersion = '1.21.4-R0.1-SNAPSHOT'
+def floodgateApiVersion = '2.2.5-SNAPSHOT'
+def cloudburstProtocolVersion = '3.0.0.Beta13-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -15,13 +20,30 @@ repositories {
         name = "sonatype"
         url = "https://oss.sonatype.org/content/groups/public/"
     }
+    maven {
+        name = "opencollabReleases"
+        url = "https://repo.opencollab.dev/maven-releases/"
+    }
+    maven {
+        name = "opencollabSnapshots"
+        url = "https://repo.opencollab.dev/maven-snapshots/"
+    }
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:${paperVersion}")
+    compileOnly("org.geysermc.floodgate:api:${floodgateApiVersion}")
+
+    implementation("org.cloudburstmc.protocol:bedrock-codec:${cloudburstProtocolVersion}")
+
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
+    testImplementation("org.mockito:mockito-core:5.15.2")
+    testImplementation("org.geysermc.floodgate:api:${floodgateApiVersion}")
+    testRuntimeOnly("io.papermc.paper:paper-api:${paperVersion}")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.11.4")
 }
 
-def targetJavaVersion = 17
+def targetJavaVersion = 21
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
@@ -46,4 +68,57 @@ processResources {
     filesMatching('plugin.yml') {
         expand props
     }
+}
+
+sourceSets {
+    testPlugin {
+        compileClasspath += sourceSets.main.output + configurations.compileClasspath
+        runtimeClasspath += output + sourceSets.main.output + configurations.runtimeClasspath
+    }
+}
+
+configurations {
+    testCompileOnly.extendsFrom(compileOnly)
+    testPluginImplementation.extendsFrom(implementation)
+    testPluginCompileOnly.extendsFrom(compileOnly)
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+tasks.named('processTestPluginResources') {
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}
+
+tasks.register('testPluginJar', Jar) {
+    archiveBaseName = 'Cumuline-TestPlugin'
+    archiveClassifier = ''
+    from sourceSets.testPlugin.output
+    dependsOn tasks.named('testPluginClasses')
+}
+
+tasks.named('shadowJar') {
+    archiveClassifier = 'all'
+    dependencies {
+        exclude(dependency('io.netty:.*'))
+    }
+
+    relocate 'org.cloudburstmc.protocol', 'cn.enderrealm.cumuline.shadow.org.cloudburstmc.protocol'
+    relocate 'org.cloudburstmc.math', 'cn.enderrealm.cumuline.shadow.org.cloudburstmc.math'
+    relocate 'org.cloudburstmc.fastutil', 'cn.enderrealm.cumuline.shadow.org.cloudburstmc.fastutil'
+    relocate 'com.nukkitx', 'cn.enderrealm.cumuline.shadow.com.nukkitx'
+    relocate 'org.bitbucket.b_c', 'cn.enderrealm.cumuline.shadow.org.bitbucket.b_c'
+    relocate 'org.cloudburstmc.nbt', 'cn.enderrealm.cumuline.shadow.org.cloudburstmc.nbt'
+    relocate 'com.fasterxml.jackson', 'cn.enderrealm.cumuline.shadow.com.fasterxml.jackson'
+}
+
+tasks.named('build') {
+    dependsOn tasks.named('shadowJar')
+    dependsOn tasks.named('testPluginJar')
 }
