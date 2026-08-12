@@ -4,6 +4,7 @@ import cn.enderrealm.cumuline.exception.NotBedrockPlayerException;
 import cn.enderrealm.cumuline.exception.PacketSendException;
 import org.bukkit.entity.Player;
 import org.geysermc.floodgate.api.FloodgateApi;
+import org.geysermc.floodgate.api.unsafe.Unsafe;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -13,6 +14,7 @@ import java.util.Objects;
  */
 public final class BedrockPacketSender {
     private final FloodgateApi floodgateApi;
+    private volatile Unsafe unsafeApi;
 
     /**
      * Creates a sender backed by the given Floodgate API.
@@ -39,9 +41,33 @@ public final class BedrockPacketSender {
         }
 
         try {
-            floodgateApi.unsafe().sendPacket(player.getUniqueId(), packetId, Arrays.copyOf(payload, payload.length));
+            unsafe().sendPacket(player.getUniqueId(), packetId, Arrays.copyOf(payload, payload.length));
         } catch (RuntimeException | LinkageError exception) {
             throw new PacketSendException("Floodgate failed to send packet " + packetId, exception);
+        }
+    }
+
+    /**
+     * Resolves Floodgate's unsafe API once and reuses it for all packets.
+     *
+     * <p>Floodgate logs a warning whenever {@code FloodgateApi#unsafe()} is called.
+     * Caching the returned handle prevents one warning from being emitted per packet.</p>
+     *
+     * @return cached unsafe API handle
+     */
+    private Unsafe unsafe() {
+        Unsafe current = unsafeApi;
+        if (current != null) {
+            return current;
+        }
+
+        synchronized (this) {
+            current = unsafeApi;
+            if (current == null) {
+                current = Objects.requireNonNull(floodgateApi.unsafe(), "Floodgate unsafe API is unavailable");
+                unsafeApi = current;
+            }
+            return current;
         }
     }
 
