@@ -105,6 +105,8 @@ tasks.register('testPluginJar', Jar) {
 
 tasks.named('shadowJar') {
     archiveClassifier = 'all'
+    mergeServiceFiles()
+
     dependencies {
         exclude(dependency('io.netty:.*'))
     }

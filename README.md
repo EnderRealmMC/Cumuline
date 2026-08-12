@@ -47,7 +47,7 @@ The first release supports:
 - client-translated `JUKEBOX_POPUP` text with a translation key and parameters;
 - a deliberately unsafe raw packet API for future packet families.
 
-The current internal codec is Cloudburst Protocol `3.0.0.Beta13-SNAPSHOT`, using codec v898 for Bedrock `1.21.130`. The codec is used only inside Cumuline and is relocated in the production shadow JAR. Cumuline does not depend on Geyser implementation classes.
+The current internal codec is Cloudburst Protocol `3.0.0.Beta13-SNAPSHOT`, using codec v1001 for Bedrock `1.26.30` through `1.26.33`. This includes Bedrock `1.26.31`. The codec is used only inside Cumuline and is relocated in the production shadow JAR. Cumuline does not depend on Geyser implementation classes.
 
 The codec version is fixed in `build.gradle`. Floodgate's unsafe API does not provide Cumuline with enough information to select a codec automatically for every client, so this release does not implement automatic multi-version selection.
 

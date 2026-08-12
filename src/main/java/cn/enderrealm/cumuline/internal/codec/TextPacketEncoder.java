@@ -96,20 +96,24 @@ public final class TextPacketEncoder {
      * @return encoded packet
      */
     private EncodedPacket encode(TextPacket packet) {
-        BedrockCodec codec = Objects.requireNonNull(codecProvider.getCodec(), "codec");
-        BedrockPacketDefinition<TextPacket> definition = codec.getPacketDefinition(TextPacket.class);
-        if (definition == null) {
-            throw new CumulineException("The configured Bedrock codec does not support TextPacket");
-        }
-
-        ByteBuf buffer = Unpooled.buffer();
         try {
-            codec.tryEncode(codec.createHelper(), buffer, packet);
-            return new EncodedPacket(definition.getId(), ByteBufUtil.getBytes(buffer));
-        } catch (RuntimeException exception) {
+            BedrockCodec codec = Objects.requireNonNull(codecProvider.getCodec(), "codec");
+            BedrockPacketDefinition<TextPacket> definition = codec.getPacketDefinition(TextPacket.class);
+            if (definition == null) {
+                throw new CumulineException("The configured Bedrock codec does not support TextPacket");
+            }
+
+            ByteBuf buffer = Unpooled.buffer();
+            try {
+                codec.tryEncode(codec.createHelper(), buffer, packet);
+                return new EncodedPacket(definition.getId(), ByteBufUtil.getBytes(buffer));
+            } finally {
+                buffer.release();
+            }
+        } catch (CumulineException exception) {
+            throw exception;
+        } catch (RuntimeException | LinkageError exception) {
             throw new CumulineException("Failed to encode Bedrock TextPacket", exception);
-        } finally {
-            buffer.release();
         }
     }
 

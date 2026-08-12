@@ -47,7 +47,7 @@ Geyser 不会解码并重新编码通过 Floodgate `floodgate:packet` 通道收�
 - 带翻译键和参数、由客户端本地化的 `JUKEBOX_POPUP`；
 - 为未来数据包类型保留的实验性原始数据包 API。
 
-当前内部 codec 使用 Cloudburst Protocol `3.0.0.Beta13-SNAPSHOT`，并使用对应的 v898 codec，目标 Bedrock 版本为 `1.21.130`。该 codec 只在 Cumuline 内部使用，并会在生产 Shadow JAR 中重定位。Cumuline 不依赖 Geyser 的实现类。
+当前内部 codec 使用 Cloudburst Protocol `3.0.0.Beta13-SNAPSHOT`，并使用对应的 v1001 codec，目标 Bedrock 版本为 `1.26.30` 至 `1.26.33`，包括 Bedrock `1.26.31`。该 codec 只在 Cumuline 内部使用，并会在生产 Shadow JAR 中重定位。Cumuline 不依赖 Geyser 的实现类。
 
 codec 版本固定在 `build.gradle` 中。Floodgate unsafe API 不会向 Cumuline 提供足够的信息来为每个客户端自动选择 codec，因此首版不实现自动多版本选择。
 
