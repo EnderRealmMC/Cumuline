@@ -33,10 +33,21 @@ public final class TextPacketEncoder {
      * @return encoded packet
      */
     public EncodedPacket popup(String message) {
+        return popup(null, message);
+    }
+
+    /**
+     * Encodes a popup message using the codec selected for a client version.
+     *
+     * @param clientVersion target client version
+     * @param message message text
+     * @return encoded packet
+     */
+    public EncodedPacket popup(String clientVersion, String message) {
         validateText(message, "message");
 
         TextPacket packet = basePacket(TextPacket.Type.POPUP, message);
-        return encode(packet);
+        return encode(clientVersion, packet);
     }
 
     /**
@@ -46,10 +57,21 @@ public final class TextPacketEncoder {
      * @return encoded packet
      */
     public EncodedPacket jukeboxPopup(String message) {
+        return jukeboxPopup(null, message);
+    }
+
+    /**
+     * Encodes a raw jukebox popup using the codec selected for a client version.
+     *
+     * @param clientVersion target client version
+     * @param message message text
+     * @return encoded packet
+     */
+    public EncodedPacket jukeboxPopup(String clientVersion, String message) {
         validateText(message, "message");
 
         TextPacket packet = basePacket(TextPacket.Type.JUKEBOX_POPUP, message);
-        return encode(packet);
+        return encode(clientVersion, packet);
     }
 
     /**
@@ -60,6 +82,18 @@ public final class TextPacketEncoder {
      * @return encoded packet
      */
     public EncodedPacket translatedJukeboxPopup(String translationKey, List<String> parameters) {
+        return translatedJukeboxPopup(null, translationKey, parameters);
+    }
+
+    /**
+     * Encodes a client-translated jukebox popup using a version-specific codec.
+     *
+     * @param clientVersion target client version
+     * @param translationKey client translation key
+     * @param parameters translation parameters
+     * @return encoded packet
+     */
+    public EncodedPacket translatedJukeboxPopup(String clientVersion, String translationKey, List<String> parameters) {
         validateText(translationKey, "translationKey");
         Objects.requireNonNull(parameters, "parameters");
         if (parameters.stream().anyMatch(Objects::isNull)) {
@@ -69,7 +103,7 @@ public final class TextPacketEncoder {
         TextPacket packet = basePacket(TextPacket.Type.JUKEBOX_POPUP, translationKey);
         packet.setNeedsTranslation(true);
         packet.setParameters(List.copyOf(parameters));
-        return encode(packet);
+        return encode(clientVersion, packet);
     }
 
     /**
@@ -95,9 +129,9 @@ public final class TextPacketEncoder {
      * @param packet packet to encode
      * @return encoded packet
      */
-    private EncodedPacket encode(TextPacket packet) {
+    private EncodedPacket encode(String clientVersion, TextPacket packet) {
         try {
-            BedrockCodec codec = Objects.requireNonNull(codecProvider.getCodec(), "codec");
+            BedrockCodec codec = Objects.requireNonNull(codecProvider.getCodec(clientVersion), "codec");
             BedrockPacketDefinition<TextPacket> definition = codec.getPacketDefinition(TextPacket.class);
             if (definition == null) {
                 throw new CumulineException("The configured Bedrock codec does not support TextPacket");

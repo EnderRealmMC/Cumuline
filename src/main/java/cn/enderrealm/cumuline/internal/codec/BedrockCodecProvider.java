@@ -1,6 +1,5 @@
 package cn.enderrealm.cumuline.internal.codec;
 
-import cn.enderrealm.cumuline.exception.CumulineException;
 import org.cloudburstmc.protocol.bedrock.codec.BedrockCodec;
 
 /**
@@ -8,10 +7,19 @@ import org.cloudburstmc.protocol.bedrock.codec.BedrockCodec;
  */
 public interface BedrockCodecProvider {
     /**
-     * Returns the configured Bedrock codec.
+     * Returns the Bedrock codec matching the target client version.
      *
-     * @return configured codec
-     * @throws CumulineException if no codec is available
+     * @param clientVersion client version, or {@code null} for a provider default
+     * @return matching codec
      */
-    BedrockCodec getCodec();
+    BedrockCodec getCodec(String clientVersion);
+
+    /**
+     * Returns the provider default codec for compatibility with fixed providers.
+     *
+     * @return default codec
+     */
+    default BedrockCodec getCodec() {
+        return getCodec(null);
+    }
 }

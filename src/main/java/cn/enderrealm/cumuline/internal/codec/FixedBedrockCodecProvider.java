@@ -15,7 +15,7 @@ public final class FixedBedrockCodecProvider implements BedrockCodecProvider {
      * @return fixed codec
      */
     @Override
-    public BedrockCodec getCodec() {
+    public BedrockCodec getCodec(String clientVersion) {
         Thread currentThread = Thread.currentThread();
         ClassLoader previousClassLoader = currentThread.getContextClassLoader();
         ClassLoader cumulineClassLoader = FixedBedrockCodecProvider.class.getClassLoader();

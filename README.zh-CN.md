@@ -47,9 +47,9 @@ Geyser 不会解码并重新编码通过 Floodgate `floodgate:packet` 通道收�
 - 带翻译键和参数、由客户端本地化的 `JUKEBOX_POPUP`；
 - 为未来数据包类型保留的实验性原始数据包 API。
 
-当前内部 codec 使用 Cloudburst Protocol `3.0.0.Beta13-SNAPSHOT`，并使用对应的 v1001 codec，目标 Bedrock 版本为 `1.26.30` 至 `1.26.33`，包括 Bedrock `1.26.31`。该 codec 只在 Cumuline 内部使用，并会在生产 Shadow JAR 中重定位。Cumuline 不依赖 Geyser 的实现类。
+当前内部使用 Cloudburst Protocol `3.0.0.Beta13-SNAPSHOT`。Cumuline 会读取 `FloodgatePlayer#getVersion()`，通过独立的 `cn.enderrealm:bedrock-protocol-mappings` 映射库查找客户端协议版本，再动态加载对应的 Cloudburst codec。映射库会被打包进生产 Shadow JAR，Cloudburst 包会被重定位。Cumuline 不依赖 Geyser 的实现类。
 
-codec 版本固定在 `build.gradle` 中。Floodgate unsafe API 不会向 Cumuline 提供足够的信息来为每个客户端自动选择 codec，因此首版不实现自动多版本选择。
+未知客户端版本，或者当前 Cloudburst 依赖中不存在对应 codec 的版本，都会被明确拒绝；Cumuline 不会静默回退到最新 codec。映射数据和公共 API 维护在独立的 [EnderRealmMC/bedrock-protocol-mappings](https://github.com/EnderRealmMC/bedrock-protocol-mappings) 仓库中。
 
 ## 运行要求
 
@@ -57,7 +57,7 @@ codec 版本固定在 `build.gradle` 中。Floodgate unsafe API 不会向 Cumuli
 - Java 21；
 - 带有 unsafe 数据包 API 的 Floodgate 2.2.x；
 - 已正确配置并接受基岩版连接的 Geyser；
-- 与当前 Cloudburst codec 兼容的基岩版客户端。
+- 当前映射表中存在、且 Cloudburst 依赖包含对应 codec 的基岩版客户端。
 
 Floodgate 是运行时依赖，不会被打包进 Cumuline。Cloudburst Protocol 会被打包并重定位到生产 JAR 中。Bukkit、Floodgate 和 Netty 仍由服务器提供。
 
@@ -92,11 +92,19 @@ public void showBedrockMessage(Player player) {
 
 ## 构建
 
-Cumuline 是独立 Gradle 项目。由于当前项目只是小型脚手架，仓库暂时使用共享的 Gradle 安装，没有提供 Wrapper。
+Cumuline 是独立 Gradle 项目。没有旁边映射源码仓库时，它会从 GitHub Packages 下载 `cn.enderrealm:bedrock-protocol-mappings:1.0.0`，不要求使用者额外克隆映射仓库。
 
 ```text
 gradle build
 ```
+
+GitHub Packages 的 Maven/Gradle 包即使设置为公开，下载时仍需要 classic Personal Access Token，并且至少需要 `read:packages` 权限。可以不修改构建文件，直接通过参数提供凭据：
+
+```text
+gradle build -PgprUser=YOUR_GITHUB_USERNAME -PgprToken=YOUR_GITHUB_TOKEN
+```
+
+在 EnderRealm 主仓库中开发时，如果映射子模块位于 `libs/bedrock-protocol-mappings`，Cumuline 会自动通过 Gradle composite build 使用本地源码。这只是主仓库开发便利，不是 Cumuline 使用者的依赖要求。
 
 生产插件生成位置：
 

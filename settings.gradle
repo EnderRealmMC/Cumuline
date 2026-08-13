@@ -1,1 +1,6 @@
 rootProject.name = 'Cumuline'
+
+def localMappingsDirectory = file('../bedrock-protocol-mappings')
+if (localMappingsDirectory.isDirectory()) {
+    includeBuild(localMappingsDirectory)
+}

@@ -28,12 +28,28 @@ repositories {
         name = "opencollabSnapshots"
         url = "https://repo.opencollab.dev/maven-snapshots/"
     }
+    maven {
+        name = "enderRealmMappings"
+        url = "https://maven.pkg.github.com/EnderRealmMC/bedrock-protocol-mappings"
+        def githubUser = providers.gradleProperty('gprUser').orElse(System.getenv('GITHUB_ACTOR') ?: '').get()
+        def githubToken = providers.gradleProperty('gprToken').orElse(System.getenv('GITHUB_TOKEN') ?: '').get()
+        if (githubUser && githubToken) {
+            credentials {
+                username = githubUser
+                password = githubToken
+            }
+        }
+        content {
+            includeGroup 'cn.enderrealm'
+        }
+    }
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:${paperVersion}")
     compileOnly("org.geysermc.floodgate:api:${floodgateApiVersion}")
 
+    implementation("cn.enderrealm:bedrock-protocol-mappings:1.0.0")
     implementation("org.cloudburstmc.protocol:bedrock-codec:${cloudburstProtocolVersion}")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
@@ -118,6 +134,7 @@ tasks.named('shadowJar') {
     relocate 'org.bitbucket.b_c', 'cn.enderrealm.cumuline.shadow.org.bitbucket.b_c'
     relocate 'org.cloudburstmc.nbt', 'cn.enderrealm.cumuline.shadow.org.cloudburstmc.nbt'
     relocate 'com.fasterxml.jackson', 'cn.enderrealm.cumuline.shadow.com.fasterxml.jackson'
+    relocate 'com.google.gson', 'cn.enderrealm.cumuline.shadow.com.google.gson'
 }
 
 tasks.named('build') {

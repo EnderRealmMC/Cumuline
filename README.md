@@ -1,6 +1,6 @@
 # Cumuline
 
-> English documentation · [中文文档](README.zh-CN.md)
+> This English README is the canonical dependency and build reference for Cumuline.
 
 ## Contents
 
@@ -47,9 +47,9 @@ The first release supports:
 - client-translated `JUKEBOX_POPUP` text with a translation key and parameters;
 - a deliberately unsafe raw packet API for future packet families.
 
-The current internal codec is Cloudburst Protocol `3.0.0.Beta13-SNAPSHOT`, using codec v1001 for Bedrock `1.26.30` through `1.26.33`. This includes Bedrock `1.26.31`. The codec is used only inside Cumuline and is relocated in the production shadow JAR. Cumuline does not depend on Geyser implementation classes.
+The internal codec is Cloudburst Protocol `3.0.0.Beta13-SNAPSHOT`. Cumuline reads `FloodgatePlayer#getVersion()`, resolves it through the standalone `cn.enderrealm:bedrock-protocol-mappings` library, and loads the matching Cloudburst codec. The mapping library is included in the production shadow JAR, while Cloudburst packages are relocated. Cumuline does not depend on Geyser implementation classes. The normal dependency source is the `EnderRealmMC/bedrock-protocol-mappings` GitHub Packages Maven repository; a local checkout is only used automatically when the mapping repository exists beside Cumuline.
 
-The codec version is fixed in `build.gradle`. Floodgate's unsafe API does not provide Cumuline with enough information to select a codec automatically for every client, so this release does not implement automatic multi-version selection.
+Unknown client versions and mappings whose Cloudburst codec is not present in the configured Cloudburst dependency are rejected explicitly; Cumuline never silently falls back to the newest codec. The mapping data and public lookup API are maintained in the separate [`EnderRealmMC/bedrock-protocol-mappings`](https://github.com/EnderRealmMC/bedrock-protocol-mappings) repository.
 
 ## Requirements
 
@@ -92,11 +92,19 @@ When the target is offline or is not a Floodgate Bedrock player, Cumuline throws
 
 ## Building
 
-Cumuline is an independent Gradle project. The repository currently provides a shared Gradle installation rather than a wrapper in this small scaffold.
+Cumuline is an independent Gradle project. It resolves `cn.enderrealm:bedrock-protocol-mappings:1.0.0` from GitHub Packages when the mapping source repository is not checked out beside it.
 
 ```text
 gradle build
 ```
+
+GitHub Packages requires a classic personal access token with package read access. Configure it without editing the build file:
+
+```text
+gradle build -PgprUser=YOUR_GITHUB_USERNAME -PgprToken=YOUR_GITHUB_TOKEN
+```
+
+When working in the parent EnderRealm repository, the checked-out mapping submodule is detected automatically and substituted through Gradle composite build. This local substitution is only a development convenience; consumers are expected to use the published Maven coordinate above.
 
 The production plugin is generated as:
 
