@@ -1,6 +1,6 @@
 # Cumuline
 
-> This English README is the canonical dependency and build reference for Cumuline.
+> English documentation · [中文文档](README.zh-CN.md)
 
 ## Contents
 
