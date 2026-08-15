@@ -47,7 +47,7 @@ Geyser 不会解码并重新编码通过 Floodgate `floodgate:packet` 通道收�
 - 带翻译键和参数、由客户端本地化的 `JUKEBOX_POPUP`；
 - 为未来数据包类型保留的实验性原始数据包 API。
 
-当前内部使用 Cloudburst Protocol `3.0.0.Beta13-SNAPSHOT`。Cumuline 会读取 `FloodgatePlayer#getVersion()`，通过独立的 `cn.enderrealm:bedrock-protocol-mappings` 映射库查找客户端协议版本，再动态加载对应的 Cloudburst codec。映射库会被打包进生产 Shadow JAR，Cloudburst 包会被重定位。Cumuline 不依赖 Geyser 的实现类。
+Cumuline 使用 [Cloudburst Protocol](https://github.com/CloudburstMC/Protocol) 进行基岩版协议编码，并通过 [bedrock-protocol-mappings](https://github.com/EnderRealmMC/bedrock-protocol-mappings) 选择对应 codec。
 
 未知客户端版本，或者当前 Cloudburst 依赖中不存在对应 codec 的版本，都会被明确拒绝；Cumuline 不会静默回退到最新 codec。映射数据和公共 API 维护在独立的 [EnderRealmMC/bedrock-protocol-mappings](https://github.com/EnderRealmMC/bedrock-protocol-mappings) 仓库中。
 

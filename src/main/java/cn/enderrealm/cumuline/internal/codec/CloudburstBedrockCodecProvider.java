@@ -38,7 +38,13 @@ public final class CloudburstBedrockCodecProvider implements BedrockCodecProvide
      */
     private BedrockCodec loadCodec(String codecId) {
         String codecPackage = BedrockCodec.class.getPackageName();
-        String className = codecPackage + "." + codecId + ".Bedrock_" + codecId;
+        String packageCodecId = codecId;
+        int suffixSeparator = codecId.indexOf('_');
+        if (suffixSeparator > 0) {
+            // Cloudburst hotfix codecs reuse the base version package and carry the suffix only in the class name.
+            packageCodecId = codecId.substring(0, suffixSeparator);
+        }
+        String className = codecPackage + "." + packageCodecId + ".Bedrock_" + codecId;
         Thread currentThread = Thread.currentThread();
         ClassLoader previousClassLoader = currentThread.getContextClassLoader();
         ClassLoader cumulineClassLoader = CloudburstBedrockCodecProvider.class.getClassLoader();

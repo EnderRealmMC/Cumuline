@@ -47,7 +47,7 @@ The first release supports:
 - client-translated `JUKEBOX_POPUP` text with a translation key and parameters;
 - a deliberately unsafe raw packet API for future packet families.
 
-The internal codec is Cloudburst Protocol `3.0.0.Beta13-SNAPSHOT`. Cumuline reads `FloodgatePlayer#getVersion()`, resolves it through the standalone `cn.enderrealm:bedrock-protocol-mappings` library, and loads the matching Cloudburst codec. The mapping library is included in the production shadow JAR, while Cloudburst packages are relocated. Cumuline does not depend on Geyser implementation classes. The normal dependency source is the `EnderRealmMC/bedrock-protocol-mappings` GitHub Packages Maven repository; a local checkout is only used automatically when the mapping repository exists beside Cumuline.
+Cumuline uses [Cloudburst Protocol](https://github.com/CloudburstMC/Protocol) for Bedrock protocol encoding and [bedrock-protocol-mappings](https://github.com/EnderRealmMC/bedrock-protocol-mappings) for codec selection.
 
 Unknown client versions and mappings whose Cloudburst codec is not present in the configured Cloudburst dependency are rejected explicitly; Cumuline never silently falls back to the newest codec. The mapping data and public lookup API are maintained in the separate [`EnderRealmMC/bedrock-protocol-mappings`](https://github.com/EnderRealmMC/bedrock-protocol-mappings) repository.
 
