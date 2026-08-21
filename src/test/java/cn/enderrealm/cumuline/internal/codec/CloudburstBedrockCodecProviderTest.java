@@ -19,7 +19,8 @@ class CloudburstBedrockCodecProviderTest {
 
         assertEquals(1001, provider.getCodec("1.26.31").getProtocolVersion());
         assertEquals(2168, provider.getCodec("1.26.41").getProtocolVersion());
-        assertEquals(2168, provider.getCodec("1.26.44").getProtocolVersion());
+        assertEquals(2169, provider.getCodec("1.26.44").getProtocolVersion());
+        assertEquals(2169, provider.getCodec("1.26.45").getProtocolVersion());
     }
 
     /**

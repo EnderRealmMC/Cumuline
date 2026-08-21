@@ -8,7 +8,7 @@ version = '1.0-SNAPSHOT'
 
 def paperVersion = '1.21.4-R0.1-SNAPSHOT'
 def floodgateApiVersion = '2.2.5-SNAPSHOT'
-def cloudburstProtocolVersion = '3.0.0.Beta13-20260814.192942-15'
+def cloudburstProtocolVersion = '3.0.0.Beta13-20260820.124150-16'
 
 repositories {
     mavenCentral()
