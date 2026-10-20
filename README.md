@@ -40,7 +40,7 @@ Geyser does not decode and re-encode packets received through Floodgate's `flood
 
 ## Current support
 
-The first release supports:
+Cumuline currently supports:
 
 - server-provided `POPUP` text;
 - server-provided `JUKEBOX_POPUP` text;

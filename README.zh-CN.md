@@ -40,7 +40,7 @@ Geyser 不会解码并重新编码通过 Floodgate `floodgate:packet` 通道收�
 
 ## 当前支持
 
-首版支持：
+Cumuline 当前支持：
 
 - 服务器直接提供文本的 `POPUP`；
 - 服务器直接提供文本的 `JUKEBOX_POPUP`；
