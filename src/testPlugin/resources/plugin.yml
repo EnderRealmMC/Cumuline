@@ -7,7 +7,7 @@ depend: [ Cumuline, floodgate ]
 commands:
   cumulinetest:
     description: Sends Cumuline packets to the command executor for manual client testing.
-    usage: /cumulinetest <popup|jukebox-raw|jukebox> ...
+    usage: /cumulinetest <popup|jukebox-raw|jukebox|toast> ...
     permission: cumuline.test
 permissions:
   cumuline.test:

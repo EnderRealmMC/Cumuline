@@ -7,6 +7,7 @@ import cn.enderrealm.cumuline.internal.codec.BedrockCodecProvider;
 import cn.enderrealm.cumuline.internal.codec.CloudburstBedrockCodecProvider;
 import cn.enderrealm.cumuline.internal.codec.EncodedPacket;
 import cn.enderrealm.cumuline.internal.codec.TextPacketEncoder;
+import cn.enderrealm.cumuline.internal.codec.ToastPacketEncoder;
 import org.bukkit.entity.Player;
 import org.geysermc.floodgate.api.FloodgateApi;
 import org.geysermc.floodgate.api.player.FloodgatePlayer;
@@ -21,6 +22,7 @@ public final class CumulineProvider implements CumulineApi {
     private final FloodgateApi floodgateApi;
     private final BedrockPacketSender packetSender;
     private final TextPacketEncoder textPacketEncoder;
+    private final ToastPacketEncoder toastPacketEncoder;
 
     /**
      * Creates the default provider using the fixed Bedrock codec.
@@ -39,6 +41,7 @@ public final class CumulineProvider implements CumulineApi {
         this.floodgateApi = Objects.requireNonNull(floodgateApi, "floodgateApi");
         packetSender = new BedrockPacketSender(floodgateApi);
         textPacketEncoder = new TextPacketEncoder(codecProvider);
+        toastPacketEncoder = new ToastPacketEncoder(codecProvider);
     }
 
     /**
@@ -66,6 +69,15 @@ public final class CumulineProvider implements CumulineApi {
     public void sendTranslatedJukeboxPopup(Player player, String translationKey, List<String> parameters) {
         EncodedPacket packet = textPacketEncoder.translatedJukeboxPopup(
                 getClientVersion(player), translationKey, parameters);
+        packetSender.send(player, packet.packetId(), packet.payload());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void sendToast(Player player, String title, String content) {
+        EncodedPacket packet = toastPacketEncoder.toast(getClientVersion(player), title, content);
         packetSender.send(player, packet.packetId(), packet.payload());
     }
 

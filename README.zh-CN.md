@@ -45,6 +45,7 @@ Geyser 不会解码并重新编码通过 Floodgate `floodgate:packet` 通道收�
 - 服务器直接提供文本的 `POPUP`；
 - 服务器直接提供文本的 `JUKEBOX_POPUP`；
 - 带翻译键和参数、由客户端本地化的 `JUKEBOX_POPUP`；
+- 服务器直接提供标题和正文的 Toast 通知（`toast_request`）；
 - 为未来数据包类型保留的实验性原始数据包 API。
 
 Cumuline 使用 [Cloudburst Protocol](https://github.com/CloudburstMC/Protocol) 进行基岩版协议编码，并通过 [bedrock-protocol-mappings](https://github.com/EnderRealmMC/bedrock-protocol-mappings) 选择对应 codec。
@@ -81,6 +82,7 @@ public void showBedrockMessage(Player player) {
             "record.nowPlaying",
             List.of("Artist", "Track")
     );
+    cumuline.sendToast(player, "Ender Realm", "Welcome to the server");
 }
 ```
 
@@ -130,6 +132,7 @@ build/libs/Cumuline-TestPlugin-1.0-SNAPSHOT.jar
 /cumulinetest popup <文本>
 /cumulinetest jukebox-raw <文本>
 /cumulinetest jukebox <翻译键> [参数...]
+/cumulinetest toast <标题> <文本>
 ```
 
 命令需要 `cumuline.test` 权限，默认仅管理员拥有。Java 玩家会被 Cumuline API 拒绝；基岩版玩家可以直接观察客户端的实际渲染表现。

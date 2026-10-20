@@ -45,6 +45,7 @@ The first release supports:
 - server-provided `POPUP` text;
 - server-provided `JUKEBOX_POPUP` text;
 - client-translated `JUKEBOX_POPUP` text with a translation key and parameters;
+- server-provided toast notification title and content (`toast_request`);
 - a deliberately unsafe raw packet API for future packet families.
 
 Cumuline uses [Cloudburst Protocol](https://github.com/CloudburstMC/Protocol) for Bedrock protocol encoding and [bedrock-protocol-mappings](https://github.com/EnderRealmMC/bedrock-protocol-mappings) for codec selection.
@@ -81,6 +82,7 @@ public void showBedrockMessage(Player player) {
             "record.nowPlaying",
             List.of("Artist", "Track")
     );
+    cumuline.sendToast(player, "Ender Realm", "Welcome to the server");
 }
 ```
 
@@ -130,6 +132,7 @@ Commands:
 /cumulinetest popup <message>
 /cumulinetest jukebox-raw <message>
 /cumulinetest jukebox <translation-key> [parameters...]
+/cumulinetest toast <title> <message>
 ```
 
 The command has the `cumuline.test` permission and defaults to operators. Java players are rejected by the Cumuline API; Bedrock players can observe the actual client rendering.

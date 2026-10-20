@@ -53,6 +53,19 @@ public interface CumulineApi {
     void sendTranslatedJukeboxPopup(Player player, String translationKey, List<String> parameters);
 
     /**
+     * Sends a toast notification with server-provided title and content to a Bedrock player.
+     *
+     * <p>Toast packets require a client version whose Bedrock codec defines the toast packet.
+     * Older clients are rejected with {@code CumulineException}.</p>
+     *
+     * @param player target player
+     * @param title toast title
+     * @param content toast body text
+     * @throws NotBedrockPlayerException if the target is not a Bedrock player
+     */
+    void sendToast(Player player, String title, String content);
+
+    /**
      * Sends a raw Bedrock packet payload through Floodgate's unsafe API.
      *
      * <p>This is an experimental and unsafe API. Invalid payloads may disconnect

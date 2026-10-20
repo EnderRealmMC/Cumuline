@@ -25,7 +25,7 @@ public final class CumulineTestPlugin extends JavaPlugin implements CommandExecu
     }
 
     /**
-     * Handles the popup and jukebox popup test commands.
+     * Handles the popup, jukebox popup and toast test commands.
      *
      * @param sender command sender
      * @param command command
@@ -44,6 +44,7 @@ public final class CumulineTestPlugin extends JavaPlugin implements CommandExecu
             player.sendMessage("Usage: /cumulinetest popup <message>");
             player.sendMessage("Usage: /cumulinetest jukebox-raw <message>");
             player.sendMessage("Usage: /cumulinetest jukebox <translation-key> [parameters...]");
+            player.sendMessage("Usage: /cumulinetest toast <title> <message>");
             return true;
         }
 
@@ -57,6 +58,7 @@ public final class CumulineTestPlugin extends JavaPlugin implements CommandExecu
                         args[1],
                         Arrays.asList(args).subList(2, args.length)
                 );
+                case "toast" -> api.sendToast(player, args[1], joinArguments(args, 2));
                 default -> {
                     player.sendMessage("Unknown test type.");
                     return true;
